@@ -1,15 +1,22 @@
 import json
 from kafka import KafkaConsumer
 
-def main():
-    print("Chat program - Message Consumer")
-    print("Wating for messages...")
-    
-    consumer = KafkaConsumer(
-    'instance-test',
-    bootstrap_servers='43.203.219.53:9092',
+def create_consumer(server_ip: str, topic: str) -> KafkaConsumer:
+    return KafkaConsumer(
+    topic,
+    bootstrap_servers=f'{server_ip}:9092',
     value_deserializer=lambda v: json.loads(v.decode("utf-8"))
     )
+
+def main():
+    print("Chat program - Message Consumer")
+    
+    server_ip = input("Server IP: ")
+    topic = input("Topic name: ")
+    
+    consumer = create_consumer(server_ip, topic)
+    
+    print("Wating for messages...")
 
     try:
         for msg in consumer:
