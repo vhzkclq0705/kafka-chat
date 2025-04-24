@@ -24,11 +24,10 @@ def get_formatted_msg(msg: str) -> str:
     now = datetime.now().strftime("%H:%M")
     return f"[{now}] {msg}"
 
-def end_chat(producer: KafkaProducer):
+def end_chat(producer: KafkaProducer, topic: str, nickname: str):
+    producer.send(topic, {"user": nickname, "msg": f"👋 {nickname} 님이 입장하셨습니다."})
     producer.flush()
     producer.close()
-    
-    print("Good bye!")
     sys.exit()
     
 def show_chat(consumer: KafkaConsumer):
@@ -57,8 +56,7 @@ def main():
     thread = threading.Thread(target=show_chat, args=(consumer,), daemon=True)
     thread.start()
     
-    print("Enter your message. (type 'exit' to quit.)")
-    
+    producer.send(topic, {"user": nickname, "msg": f"👋 {nickname} 님이 입장하셨습니다."})
     try:
         while patch_stdout():
             msg = input()
