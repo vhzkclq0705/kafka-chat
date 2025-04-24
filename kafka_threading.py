@@ -14,9 +14,10 @@ def create_producer(server_ip: str) -> KafkaProducer:
 
 def create_consumer(server_ip: str, topic: str) -> KafkaConsumer:
     return KafkaConsumer(
-    topic,
-    bootstrap_servers=f'{server_ip}:9092',
-    value_deserializer=lambda v: json.loads(v.decode("utf-8"))
+        topic,
+        bootstrap_servers=f'{server_ip}:9092',
+        value_deserializer=lambda v: json.loads(v.decode("utf-8")),
+        group_id=None,  # 각자 모든 메시지 수신
     )
 
 def get_formatted_msg(msg: str) -> str:
