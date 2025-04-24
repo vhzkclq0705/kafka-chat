@@ -25,7 +25,6 @@ def get_formatted_msg(msg: str) -> str:
     return f"[{now}] {msg}"
 
 def end_chat(producer: KafkaProducer, topic: str, nickname: str):
-    producer.send(topic, {"user": nickname, "msg": f"👋 {nickname} 님이 입장하셨습니다."})
     producer.flush()
     producer.close()
     sys.exit()
@@ -37,7 +36,7 @@ def show_chat(consumer: KafkaConsumer):
             if 'msg' in value:
                 print(f"{value['user']}: {value['msg']}")
             else:
-                print(f"ERROR: {value['error']}")
+                print(f"[ERROR]: User-{value['user']}\n{value['error']}")
     except Exception:
         print("Good bye!")
     finally:
@@ -56,7 +55,7 @@ def main():
     thread = threading.Thread(target=show_chat, args=(consumer,), daemon=True)
     thread.start()
     
-    producer.send(topic, {"user": nickname, "msg": f"👋 {nickname} 님이 입장하셨습니다."})
+    producer.send(topic, {"user": "", "msg": f"👋 {nickname} 님이 입장하셨습니다."})
     try:
         while patch_stdout():
             msg = input()
@@ -70,6 +69,7 @@ def main():
         msg = get_formatted_msg(get_formatted_msg(f"An error caused.\n{str(e)}"))
         producer.send(topic, {"user": nickname, "error": msg})
     finally:
+        producer.send(topic, {"user": "", "msg": f"👋 {nickname} 님이 퇴장하셨습니다."})
         end_chat(producer)
 
 if __name__ == "__main__":
