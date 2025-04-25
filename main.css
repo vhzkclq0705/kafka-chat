@@ -1,0 +1,33 @@
+Screen {
+    background: black;
+    color: white;
+}
+
+#home_container {
+    align: center middle;
+    width: 50%;
+    height: auto;
+    border: heavy $accent;
+    padding: 2;
+    layout: vertical;
+}
+
+#chat_layout {
+    height: 100%;
+    width: 100%;
+    layout: vertical;
+    border: round #666;
+    padding: 1;
+}
+
+#chat_log {
+    height: 90%;
+    border: round white;
+    scrollbar-color: green;
+    overflow-y: auto;
+}
+
+#chat_input {
+    height: 3;
+    border: round yellow;
+}
